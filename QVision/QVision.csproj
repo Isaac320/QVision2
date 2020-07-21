@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cameras\GrayPoint\GPCam.cs" />
     <Compile Include="Frm\AboutFrm.cs">
       <SubType>Form</SubType>
     </Compile>

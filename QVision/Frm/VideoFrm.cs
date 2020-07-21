@@ -20,5 +20,10 @@ namespace QVision.Frm
         {
             QVision.Tools.SerPort.SendData("aaaaaa");
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -44,10 +44,11 @@
             this.panel9 = new System.Windows.Forms.Panel();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.panel7 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button2 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -260,6 +261,7 @@
             // 
             // panel8
             // 
+            this.panel8.Controls.Add(this.button3);
             this.panel8.Controls.Add(this.button2);
             this.panel8.Controls.Add(this.button1);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -267,6 +269,26 @@
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(282, 194);
             this.panel8.TabIndex = 1;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(27, 110);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(77, 57);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "Light";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(151, 33);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(77, 57);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "Camera";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
@@ -297,16 +319,6 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(151, 33);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(77, 57);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Camera";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // VideoFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -316,6 +328,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VideoFrm";
             this.Text = "VideoFrm";
+            this.Load += new System.EventHandler(this.VideoFrm_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -355,5 +368,6 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }

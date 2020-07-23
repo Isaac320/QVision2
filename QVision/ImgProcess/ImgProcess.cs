@@ -41,13 +41,17 @@ namespace QVision.ImgProcess
 
 
 
-        public void Run(HImage image1,HImage image2,HImage image3,HRegion region,out HObject xld1,out HObject xld2,out HObject xld3)
+        public void Run(HImage image1,HImage image2,HImage image3,HObject region,out HObject xld1,out HObject xld2,out HObject xld3)
         {
 
             myList.Clear();
             xld1 = null;
             xld2 = null;
             xld3 = null;
+
+            HOperatorSet.GenEmptyObj(out xld1);
+            HOperatorSet.GenEmptyObj(out xld2);
+            HOperatorSet.GenEmptyObj(out xld3);
 
             HHomMat2D homMat;
 
@@ -93,10 +97,10 @@ namespace QVision.ImgProcess
                     out hv_heightD, out hv_PinWidthD);
 
 
-                HOperatorSet.AffineTransRegion(ho_EmptyObjectR, out HObject regionR, homMat, "nearest_neighbor");
-                HOperatorSet.AffineTransRegion(ho_EmptyObjectL, out HObject regionL, homMat, "nearest_neighbor");
-                HOperatorSet.AffineTransRegion(ho_EmptyObjectU, out HObject regionU, homMat, "nearest_neighbor");
-                HOperatorSet.AffineTransRegion(ho_EmptyObjectD, out HObject regionD, homMat, "nearest_neighbor");
+                HOperatorSet.AffineTransRegion(ho_SelectedRegionsR, out HObject regionR, homMat, "nearest_neighbor");
+                HOperatorSet.AffineTransRegion(ho_SelectedRegionsL, out HObject regionL, homMat, "nearest_neighbor");
+                HOperatorSet.AffineTransRegion(ho_SelectedRegionsU, out HObject regionU, homMat, "nearest_neighbor");
+                HOperatorSet.AffineTransRegion(ho_SelectedRegionsD, out HObject regionD, homMat, "nearest_neighbor");
 
                 xld1 =xld1.ConcatObj(regionR);
                 xld1 = xld1.ConcatObj(regionL);
@@ -1215,8 +1219,7 @@ namespace QVision.ImgProcess
             HOperatorSet.SmallestCircle(ho_SelectedRegions, out hv_Row2, out hv_Column2,
                 out hv_Radius);
             ho_ContCircle.Dispose();
-            HOperatorSet.GenCircleContourXld(out ho_ContCircle, hv_Row2, hv_Column2, hv_Radius,
-                0, 6.28318, "positive", 1);
+            
             ho_RegionCheck.Dispose();
             ho_ImageReduced2.Dispose();
             ho_Regions1.Dispose();

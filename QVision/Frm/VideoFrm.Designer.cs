@@ -160,6 +160,7 @@
             this.hSmartWindowControl2.Size = new System.Drawing.Size(538, 318);
             this.hSmartWindowControl2.TabIndex = 1;
             this.hSmartWindowControl2.WindowSize = new System.Drawing.Size(538, 318);
+            this.hSmartWindowControl2.Load += new System.EventHandler(this.hSmartWindowControl2_Load);
             // 
             // panel5
             // 
@@ -277,7 +278,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(77, 57);
             this.button3.TabIndex = 2;
-            this.button3.Text = "Light";
+            this.button3.Text = "Light2";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -297,7 +298,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(77, 57);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Light";
+            this.button1.Text = "Light1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 

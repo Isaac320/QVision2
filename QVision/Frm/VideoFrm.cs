@@ -20,6 +20,9 @@ namespace QVision.Frm
         bool isRunCamera = true;
         bool needSnap = false;
 
+        bool light1 = true;
+        bool light2 = true;
+
         Thread th1;
 
         delegate void  delegateShow(string s);
@@ -31,18 +34,37 @@ namespace QVision.Frm
 
         private void button1_Click(object sender, EventArgs e)
         {
-            QVision.Tools.SerPort.SendData("SA0100#");
+            if (light1)
+            {
+                QVision.Tools.SerPort.SendData("SA0000#");
+                light1 = false;
+            }
+            else
+            {
+                QVision.Tools.SerPort.SendData("SA0100#");
+                light1 = true;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
 
             needSnap = true;
+            //Run();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            QVision.Tools.SerPort.SendData("SA0000#");
+            if (light2)
+            {
+                QVision.Tools.SerPort.SendData("SD0000#");
+                light2 = false;
+            }
+            else
+            {
+                QVision.Tools.SerPort.SendData("SD0100#");
+                light2 = true;
+            }
         }
 
 
@@ -70,33 +92,38 @@ namespace QVision.Frm
             while (isRunCamera)
             {
                 if (!needSnap)
-                {                    
+                {
                     HImage image111 = cam.Snap();
-                   // hSmartWindowControl1.HalconWindow.SetPart(0, 0, -2, -2);
+                    // hSmartWindowControl1.HalconWindow.SetPart(0, 0, -2, -2);
                     hSmartWindowControl1.HalconWindow.DispObj(image111);
+                    //Thread.Sleep(100);
                 }
                 else
                 {
-                    string time = DateTime.Now.ToString("HHmmss");
+
+                HObject image111 = cam.Snap();
+                //       // hSmartWindowControl1.HalconWindow.SetPart(0, 0, -2, -2);
+                     hSmartWindowControl1.HalconWindow.DispObj(image111);
+                string time = DateTime.Now.ToString("HHmmss");
                     Light1ON();
-                    HImage image1 = cam.Snap();
+                    HObject image1 = cam.Snap();
                     
                     hSmartWindowControl2.HalconWindow.DispObj(image1);
                     hSmartWindowControl2.HalconWindow.SetPart(0, 0, -2, -2);
                     //  image1.WriteImage("bmp", 0, time + "1" + ".bmp");
                     Light2ON();
-                    HImage image2 = cam.Snap();
+                    HObject image2 = cam.Snap();
                     
                     hSmartWindowControl3.HalconWindow.DispObj(image2);
                     hSmartWindowControl3.HalconWindow.SetPart(0, 0, -2, -2);
                     // image2.WriteImage("bmp", 0, time + "2" + ".bmp");
                     LightAllON();
-                    HImage image3 = cam.Snap();
+                    HObject image3 = cam.Snap();
                     
                     hSmartWindowControl4.HalconWindow.DispObj(image3);
                     hSmartWindowControl4.HalconWindow.SetPart(0, 0, -2, -2);
                     // image3.WriteImage("bmp", 0, time + "3" + ".bmp");
-                    runImage(image1,image2,image3);
+                    runImage(image1, image2, image3);
                     needSnap = false;
                 }
             }
@@ -105,7 +132,7 @@ namespace QVision.Frm
 
 
 
-        private void runImage(HImage image1,HImage image2,HImage image3)
+        private void runImage(HObject image1, HObject image2, HObject image3)
         {
             listboxClear();
             if (!myprocess.isInit)
@@ -113,6 +140,13 @@ namespace QVision.Frm
                 myprocess.Init();
             }
             HRegion region = new HRegion(69.6906, 41.8878, 2944.91, 2522.69);
+
+            //HObject region;
+            //HOperatorSet.GenEmptyObj(out region);
+
+            //region.Dispose();
+            //HOperatorSet.GenRectangle1(out region, 69.6906, 41.8878, 2944.91, 2522.69);
+
             myprocess.Run(image1, image2, image3, region, out HObject xld1, out HObject xld2, out HObject xld3);
 
             listboxShow("1号芯片:");
@@ -126,6 +160,9 @@ namespace QVision.Frm
 
             hSmartWindowControl3.HalconWindow.SetColor("green");
             hSmartWindowControl3.HalconWindow.DispObj(xld2);
+
+            hSmartWindowControl4.HalconWindow.SetColor("red");
+            hSmartWindowControl4.HalconWindow.DispObj(xld3);
 
 
             HRegion region2 = new HRegion(132.082, 1313.52, 2965.7, 4035.26);
@@ -142,6 +179,9 @@ namespace QVision.Frm
 
             hSmartWindowControl3.HalconWindow.SetColor("green");
             hSmartWindowControl3.HalconWindow.DispObj(xld5);
+
+            hSmartWindowControl4.HalconWindow.SetColor("red");
+            hSmartWindowControl4.HalconWindow.DispObj(xld6);
 
         }
 
@@ -186,6 +226,11 @@ namespace QVision.Frm
         private void hSmartWindowControl1_Load(object sender, EventArgs e)
         {
             
+        }
+
+        private void hSmartWindowControl2_Load(object sender, EventArgs e)
+        {
+            //hSmartWindowControl2.MouseWheel += hSmartWindowControl2.HSmartWindowControl_MouseWheel;
         }
     }
 }

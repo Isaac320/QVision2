@@ -41,7 +41,7 @@ namespace QVision.ImgProcess
 
 
 
-        public void Run(HImage image1,HImage image2,HImage image3,HObject region,out HObject xld1,out HObject xld2,out HObject xld3)
+        public void Run(HObject image1, HObject image2, HObject image3,HObject region,out HObject xld1,out HObject xld2,out HObject xld3)
         {
 
             myList.Clear();
@@ -55,7 +55,7 @@ namespace QVision.ImgProcess
 
             HHomMat2D homMat;
 
-            GetMyImage(image1, image2, region, out HObject ho_Regions, out HObject ho_ImageAffineTrans1, hv_ModelID, hv_R1, hv_C1, hv_Ang1,out HTuple flag3,out HTuple hommat2d);
+            GetMyImage(image1,region, image2, out HObject ho_Regions, out HObject ho_ImageAffineTrans1,out HObject ho_ImageAffineTrans2, hv_ModelID, hv_R1, hv_C1, hv_Ang1,out HTuple flag3,out HTuple hommat2d);
 
             if (flag3 != 0)
             {
@@ -113,11 +113,28 @@ namespace QVision.ImgProcess
 
                 HOperatorSet.AffineTransRegion(ho_SelectedRegions, out HObject regionM, homMat, "nearest_neighbor");
 
-                xld2 = regionM;
+                xld2 = xld2.ConcatObj(regionM);
+
+
+                testMiss(ho_ImageAffineTrans2, out HObject ho_RegionUnion, out HTuple hv_Number);
+
+                xld3 = xld3.ConcatObj(ho_RegionUnion);
+
+                if(hv_Number!=0)
+                {
+                    myList.Add("破损");
+                }
+               
+
 
                 if (hv_Radius > MaxR)
                 {
                     myList.Add("打叉");
+                }
+
+                if(hv_NumberR!=16)
+                {
+                    myList.Add("右侧Pin脚数量不对");
                 }
 
                 CheckHeight(hv_heightR, hv_HeightMin, hv_HeightMax, out HTuple flag);
@@ -132,6 +149,11 @@ namespace QVision.ImgProcess
                     myList.Add("右侧Pin脚过长");
                 }
 
+                if (hv_NumberL != 16)
+                {
+                    myList.Add("左侧Pin脚数量不对");
+                }
+
                 CheckHeight(hv_heightL, hv_HeightMin, hv_HeightMax, out flag);
                 if (flag != 0)
                 {
@@ -144,6 +166,11 @@ namespace QVision.ImgProcess
                     myList.Add("左侧Pin脚过长");
                 }
 
+                if (hv_NumberU != 16)
+                {
+                    myList.Add("上侧Pin脚数量不对");
+                }
+
                 CheckHeight(hv_heightU, hv_HeightMin, hv_HeightMax, out flag);
                 if (flag != 0)
                 {
@@ -154,6 +181,11 @@ namespace QVision.ImgProcess
                 if (flag != 0)
                 {
                     myList.Add("上侧Pin脚过长");
+                }
+
+                if (hv_NumberD != 16)
+                {
+                    myList.Add("下侧Pin脚数量不对");
                 }
 
                 CheckHeight(hv_heightD, hv_HeightMin, hv_HeightMax, out flag);
@@ -178,8 +210,9 @@ namespace QVision.ImgProcess
 
 
         public void GetMyImage(HObject ho_Image1, HObject ho_ROI_0, HObject ho_Image2,
-       out HObject ho_Regions, out HObject ho_ImageAffineTrans1, HTuple hv_ModelID,
-       HTuple hv_R1, HTuple hv_C1, HTuple hv_Ang1, out HTuple hv_flag, out HTuple hv_HomMat2DInvert)
+      HObject ho_Image3, out HObject ho_Regions, out HObject ho_ImageAffineTrans1,
+      out HObject ho_ImageAffineTrans2, HTuple hv_ModelID, HTuple hv_R1, HTuple hv_C1,
+      HTuple hv_Ang1, out HTuple hv_flag, out HTuple hv_HomMat2DInvert)
         {
 
 
@@ -188,7 +221,7 @@ namespace QVision.ImgProcess
             // Local iconic variables 
 
             HObject ho_ImageReduced, ho_ImageAffineTrans = null;
-            HObject ho_ImageReduced1 = null;
+            HObject ho_ImageReduced1 = null, ho_ImageReduced2 = null;
 
             // Local control variables 
 
@@ -197,9 +230,11 @@ namespace QVision.ImgProcess
             // Initialize local and output iconic variables 
             HOperatorSet.GenEmptyObj(out ho_Regions);
             HOperatorSet.GenEmptyObj(out ho_ImageAffineTrans1);
+            HOperatorSet.GenEmptyObj(out ho_ImageAffineTrans2);
             HOperatorSet.GenEmptyObj(out ho_ImageReduced);
             HOperatorSet.GenEmptyObj(out ho_ImageAffineTrans);
             HOperatorSet.GenEmptyObj(out ho_ImageReduced1);
+            HOperatorSet.GenEmptyObj(out ho_ImageReduced2);
             hv_HomMat2DInvert = new HTuple();
 
             hv_flag = 0;
@@ -225,6 +260,13 @@ namespace QVision.ImgProcess
                 HOperatorSet.AffineTransImage(ho_ImageReduced1, out ho_ImageAffineTrans1, hv_HomMat2D,
                     "constant", "false");
 
+
+                ho_ImageReduced2.Dispose();
+                HOperatorSet.ReduceDomain(ho_Image3, ho_ROI_0, out ho_ImageReduced2);
+                ho_ImageAffineTrans2.Dispose();
+                HOperatorSet.AffineTransImage(ho_ImageReduced2, out ho_ImageAffineTrans2, hv_HomMat2D,
+                    "constant", "false");
+
                 HOperatorSet.HomMat2dInvert(hv_HomMat2D, out hv_HomMat2DInvert);
 
                 hv_flag = 1;
@@ -239,6 +281,7 @@ namespace QVision.ImgProcess
             ho_ImageReduced.Dispose();
             ho_ImageAffineTrans.Dispose();
             ho_ImageReduced1.Dispose();
+            ho_ImageReduced2.Dispose();
 
             return;
         }
@@ -1207,7 +1250,7 @@ namespace QVision.ImgProcess
             HOperatorSet.ReduceDomain(ho_ImageAffineTrans1, ho_RegionCheck, out ho_ImageReduced2
                 );
             ho_Regions1.Dispose();
-            HOperatorSet.Threshold(ho_ImageReduced2, out ho_Regions1, 0, 58);
+            HOperatorSet.Threshold(ho_ImageReduced2, out ho_Regions1, 0, 60);
             ho_RegionIntersection.Dispose();
             HOperatorSet.Intersection(ho_RegionCheck, ho_Regions1, out ho_RegionIntersection
                 );
@@ -1286,5 +1329,49 @@ namespace QVision.ImgProcess
 
             return;
         }
+
+
+
+        public void testMiss(HObject ho_ImageAffineTrans2, out HObject ho_RegionUnion,
+      out HTuple hv_Number)
+        {
+
+
+
+            // Local iconic variables 
+
+            HObject ho_regionCK, ho_ImageReduced, ho_Regions1;
+            HObject ho_ConnectedRegions, ho_SelectedRegions1;
+            // Initialize local and output iconic variables 
+            HOperatorSet.GenEmptyObj(out ho_RegionUnion);
+            HOperatorSet.GenEmptyObj(out ho_regionCK);
+            HOperatorSet.GenEmptyObj(out ho_ImageReduced);
+            HOperatorSet.GenEmptyObj(out ho_Regions1);
+            HOperatorSet.GenEmptyObj(out ho_ConnectedRegions);
+            HOperatorSet.GenEmptyObj(out ho_SelectedRegions1);
+            ho_regionCK.Dispose();
+            HOperatorSet.GenRectangle1(out ho_regionCK, 697.238, 778.491, 1487.97, 1567.96);
+            ho_ImageReduced.Dispose();
+            HOperatorSet.ReduceDomain(ho_ImageAffineTrans2, ho_regionCK, out ho_ImageReduced
+                );
+            ho_Regions1.Dispose();
+            HOperatorSet.Threshold(ho_ImageReduced, out ho_Regions1, 100, 255);
+            ho_ConnectedRegions.Dispose();
+            HOperatorSet.Connection(ho_Regions1, out ho_ConnectedRegions);
+            ho_SelectedRegions1.Dispose();
+            HOperatorSet.SelectShape(ho_ConnectedRegions, out ho_SelectedRegions1, "area",
+                "and", 400, 50000);
+            HOperatorSet.CountObj(ho_SelectedRegions1, out hv_Number);
+            ho_RegionUnion.Dispose();
+            HOperatorSet.Union1(ho_SelectedRegions1, out ho_RegionUnion);
+            ho_regionCK.Dispose();
+            ho_ImageReduced.Dispose();
+            ho_Regions1.Dispose();
+            ho_ConnectedRegions.Dispose();
+            ho_SelectedRegions1.Dispose();
+
+            return;
+        }
+
     }
 }

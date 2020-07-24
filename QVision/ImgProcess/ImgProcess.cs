@@ -55,7 +55,7 @@ namespace QVision.ImgProcess
 
             HHomMat2D homMat;
 
-            GetMyImage(image1,region, image2, out HObject ho_Regions, out HObject ho_ImageAffineTrans1,out HObject ho_ImageAffineTrans2, hv_ModelID, hv_R1, hv_C1, hv_Ang1,out HTuple flag3,out HTuple hommat2d);
+            GetMyImage(image1,region, image2,image3, out HObject ho_Regions, out HObject ho_ImageAffineTrans1,out HObject ho_ImageAffineTrans2, hv_ModelID, hv_R1, hv_C1, hv_Ang1,out HTuple flag3,out HTuple hommat2d);
 
             if (flag3 != 0)
             {

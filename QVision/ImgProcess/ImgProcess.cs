@@ -118,7 +118,9 @@ namespace QVision.ImgProcess
 
                 testMiss(ho_ImageAffineTrans2, out HObject ho_RegionUnion, out HTuple hv_Number);
 
-                xld3 = xld3.ConcatObj(ho_RegionUnion);
+                HOperatorSet.AffineTransRegion(ho_RegionUnion, out HObject regionCKK, homMat, "nearest_neighbor");
+
+                xld3 = xld3.ConcatObj(regionCKK);
 
                 if(hv_Number!=0)
                 {
@@ -1355,12 +1357,12 @@ namespace QVision.ImgProcess
             HOperatorSet.ReduceDomain(ho_ImageAffineTrans2, ho_regionCK, out ho_ImageReduced
                 );
             ho_Regions1.Dispose();
-            HOperatorSet.Threshold(ho_ImageReduced, out ho_Regions1, 100, 255);
+            HOperatorSet.Threshold(ho_ImageReduced, out ho_Regions1, 120, 255);
             ho_ConnectedRegions.Dispose();
             HOperatorSet.Connection(ho_Regions1, out ho_ConnectedRegions);
             ho_SelectedRegions1.Dispose();
             HOperatorSet.SelectShape(ho_ConnectedRegions, out ho_SelectedRegions1, "area",
-                "and", 400, 50000);
+                "and", 500, 50000);
             HOperatorSet.CountObj(ho_SelectedRegions1, out hv_Number);
             ho_RegionUnion.Dispose();
             HOperatorSet.Union1(ho_SelectedRegions1, out ho_RegionUnion);
